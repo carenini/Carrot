@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <groupId>it.cefriel.itsociety</groupId>
-    <artifactId>spring-rabbit-cloud</artifactId>
+    <artifactId>carrot</artifactId>
     <version>0.0.1.BUILD-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>AMQP-CEP authorization module</name>
