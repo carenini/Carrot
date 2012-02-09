@@ -6,6 +6,7 @@ import org.springframework.amqp.core.MessageListener;
 public class MessageHandler  implements MessageListener  {
 
     public MessageHandler(){
+    	super();
     	System.out.println("Message listener started, I LIVE!");
     }
 
