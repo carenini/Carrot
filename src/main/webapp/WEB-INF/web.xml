@@ -5,6 +5,12 @@
 			http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
 
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>/WEB-INF/log4j.properties</param-value>
+    </context-param>
+
+
     <servlet>
         <servlet-name>acl_enforcer</servlet-name>
         <servlet-class>
@@ -22,4 +28,15 @@
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
+
+    <listener>
+        <listener-class>
+            org.springframework.web.context.ContextLoaderListener
+        </listener-class>
+    </listener>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/configuration.xml</param-value>
+    </context-param>
 </web-app>

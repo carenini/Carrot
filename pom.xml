@@ -16,6 +16,7 @@
         <spring.amqp.version>1.0.0.RELEASE</spring.amqp.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <cloudfoundry-version>0.8.1</cloudfoundry-version>
+        <jackson-version>1.7.2</jackson-version>
     </properties>
     <profiles>
         <profile>
@@ -49,7 +50,12 @@
                 <artifactId>esper</artifactId>
                 <version>4.5.0</version>
         </dependency>
-
+        <dependency>
+            <!-- Using Jackson for JSON marshaling -->
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>${jackson-version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
@@ -65,6 +71,11 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
+            <version>${spring.framework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
             <version>${spring.framework.version}</version>
         </dependency>
         <dependency>

@@ -11,8 +11,7 @@ public class CepGoodMessageListener implements UpdateListener {
 
 	@Override
 	public void update(EventBean[] arg0, EventBean[] arg1) {
-		// TODO Auto-generated method stub
-        System.out.println("Event received: "+ newData[0].getUnderlying());
+   //     System.out.println("Event received: "+ newData[0].getUnderlying());
 	}
 }
 
