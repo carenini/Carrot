@@ -5,18 +5,20 @@
 			http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
 
-	<servlet>
-		<servlet-name>ACLEnforcer</servlet-name>
-        <servlet-class>it.cefriel.itsociety.security.ACLEnforcer</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>ACLEnforcer</servlet-name>
-		<url-pattern>/</url-pattern>
+    <servlet>
+        <servlet-name>acl_enforcer</servlet-name>
+        <servlet-class>
+            org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet-mapping>
+		<servlet-name>acl_enforcer</servlet-name>
+		<url-pattern>*.*</url-pattern>
 	</servlet-mapping>
 
-	<welcome-file-list>
+    <welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
