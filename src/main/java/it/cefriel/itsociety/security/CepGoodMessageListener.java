@@ -10,8 +10,8 @@ public class CepGoodMessageListener implements UpdateListener {
     }
 
 	@Override
-	public void update(EventBean[] arg0, EventBean[] arg1) {
-   //     System.out.println("Event received: "+ newData[0].getUnderlying());
+	public void update(EventBean[] newData, EventBean[] oldData) {
+        System.out.println("Event received: "+ newData[0].getUnderlying());
 	}
 }
 
