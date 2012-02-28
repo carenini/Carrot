@@ -11,7 +11,12 @@
     
     <bean id="jsonConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter"/>
     <bean id="globalInListener" class="it.cefriel.itsociety.security.IncomingMessageListener" />
-    
+    <bean id="refusedListener"
+    	class="it.cefriel.itsociety.security.RefusedMessageListener">
+    <property name="amqp" ref="amqpTemplate"></property>
+    <property name="target_exchange" value="itsociety_sink"></property>
+    </bean>
+
     <cloud:rabbit-connection-factory id="connectionFactory"/>
 	<rabbit:admin id="amqpAdmin" connection-factory="connectionFactory"/>
     

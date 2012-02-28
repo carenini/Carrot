@@ -8,7 +8,6 @@
 	<enableImports><![CDATA[true]]></enableImports>
 	<configs>
 		<config>src/main/resources/rabbitConfiguration.xml</config>
-		<config>src/main/webapp/WEB-INF/opensocial.xml</config>
 	</configs>
 	<configSets>
 		<configSet>
