@@ -32,6 +32,7 @@ public class IncomingMessageListener implements MessageListener {
         //TODO: define the query
         cepStatement=cepAdm.createEPL("select * from IncomingMessage");
         cepStatement.addListener(new CepGoodMessageListener());
+        cepRT.setUnmatchedListener(new RefusedMessageListener());
         System.out.println("CEPRT= "+cepRT);
     }
 

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beansProjectDescription>
 	<version>1</version>
-	<pluginVersion><![CDATA[2.3.3.201005160334-M1]]></pluginVersion>
+	<pluginVersion><![CDATA[2.8.1.201111220115-RELEASE]]></pluginVersion>
 	<configSuffixes>
 		<configSuffix><![CDATA[xml]]></configSuffix>
 	</configSuffixes>
 	<enableImports><![CDATA[true]]></enableImports>
 	<configs>
 		<config>src/main/resources/rabbitConfiguration.xml</config>
+		<config>src/main/webapp/WEB-INF/opensocial.xml</config>
 	</configs>
 	<configSets>
 		<configSet>
@@ -16,6 +17,8 @@
 			<incomplete>false</incomplete>
 			<configs>
 			</configs>
+			<profiles>
+			</profiles>
 		</configSet>
 	</configSets>
 </beansProjectDescription>
