@@ -33,7 +33,7 @@ public class RefusedMessageListener implements UnmatchedListener {
 		
         System.out.println("Message refused: "+ arg0.getUnderlying());
         bad_message=(Message) arg0.getUnderlying();
-        routing_key=bad_message.getMessageProperties().getReceivedRoutingKey();
+        routing_key=bad_message.getMessageProperties().getReceivedRoutingKey()+".refused";
         amqp.send(target_exchange,routing_key,bad_message);
 	}
 

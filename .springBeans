@@ -7,7 +7,7 @@
 	</configSuffixes>
 	<enableImports><![CDATA[true]]></enableImports>
 	<configs>
-		<config>src/main/resources/rabbitConfiguration.xml</config>
+		<config>src/main/webapp/WEB-INF/configuration.xml</config>
 	</configs>
 	<configSets>
 		<configSet>
