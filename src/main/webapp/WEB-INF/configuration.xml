@@ -3,19 +3,29 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
-    xmlns:cloud="http://schema.cloudfoundry.org/spring"
-    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	xmlns:cloud="http://schema.cloudfoundry.org/spring"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-jdbc="http://www.springframework.org/schema/integration/jdbc"
+	xmlns:int-amqp="http://www.springframework.org/schema/integration/amqp"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
 		http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd
         http://schema.cloudfoundry.org/spring http://schema.cloudfoundry.org/spring/cloudfoundry-spring.xsd
-        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+
+        http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-2.1.xsd
+
+        http://www.springframework.org/schema/integration/jdbc http://www.springframework.org/schema/integration/jdbc/spring-integration-jdbc-2.1.xsd
+        http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp-2.1.xsd
+        ">
     
     <bean id="jsonConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter"/>
-    <bean id="globalInListener" class="it.cefriel.itsociety.security.IncomingMessageListener">
+    <!-- <bean id="globalInListener" class="it.cefriel.itsociety.security.IncomingMessageListener">
             <property name="cache_size" value='10'/>
     </bean>
-
+    -->
+    
     <!-- STORAGE -->
     <cloud:data-source id="sqlDataSource" />
     <jdbc:initialize-database data-source="sqlDataSource">
@@ -35,13 +45,14 @@
     <rabbit:queue id="input_queue" name="input_queue" durable="false" />
 
     <!-- Master -> Slave exchange -->
-    <rabbit:fanout-exchange name="itsociety_sink" durable="false">   
+    <rabbit:fanout-exchange id="sink" name="itsociety_sink" durable="false">   
         <rabbit:bindings>
             <rabbit:binding queue="input_queue" />
         </rabbit:bindings>
     </rabbit:fanout-exchange>
 
-    <bean
+    <!-- ESPER PART HERE -->
+    <!-- <bean
     	class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer"
     	id="message_container">
         <property name="connectionFactory" ref="connectionFactory"/>
@@ -55,4 +66,23 @@
         <property name="amqp" ref="amqpTemplate"></property>
         <property name="target_exchange" value="itsociety_sink"></property>
     </bean>
+     -->
+     
+    <!-- SPRING INTEGRATION PART STARTS HERE -->
+    <bean id="decider" class="it.cefriel.itsociety.security.AuthorizationDecider">
+        <property name="rejected_exchange" ref="sink"/>
+        <property name="db" value="sqlDataSource"/>
+    </bean>
+
+    <int:channel id="input_channel"></int:channel>
+
+    <int-amqp:inbound-channel-adapter id="input_adapter"
+    	channel="input_channel" queue-names="input_queue"
+    	connection-factory="connectionFactory"
+    	message-converter="jsonConverter" />
+
+    <int:service-activator id="authorisation_service" ref="decider"
+    	method="is_authorized" input-channel="input_channel">
+    </int:service-activator>
+
 </beans>
