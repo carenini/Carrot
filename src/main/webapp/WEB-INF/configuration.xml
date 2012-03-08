@@ -47,6 +47,8 @@
 
     <!-- SPRING INTEGRATION PART STARTS HERE -->
     <bean id="decider" class="it.cefriel.itsociety.security.AuthorizationDecider">
+        <property name="output_channel" ref=""/>
+        <property name="rejected_channel" ref=""/>
         <property name="rejected_exchange" ref="sink"/>
         <property name="db" value="sqlDataSource"/>
     </bean>
