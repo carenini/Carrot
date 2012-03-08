@@ -13,18 +13,12 @@
 		http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd
         http://schema.cloudfoundry.org/spring http://schema.cloudfoundry.org/spring/cloudfoundry-spring.xsd
         http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
-
         http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-2.1.xsd
-
         http://www.springframework.org/schema/integration/jdbc http://www.springframework.org/schema/integration/jdbc/spring-integration-jdbc-2.1.xsd
         http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp-2.1.xsd
         ">
     
     <bean id="jsonConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter"/>
-    <!-- <bean id="globalInListener" class="it.cefriel.itsociety.security.IncomingMessageListener">
-            <property name="cache_size" value='10'/>
-    </bean>
-    -->
     
     <!-- STORAGE -->
     <cloud:data-source id="sqlDataSource" />
@@ -51,23 +45,6 @@
         </rabbit:bindings>
     </rabbit:fanout-exchange>
 
-    <!-- ESPER PART HERE -->
-    <!-- <bean
-    	class="org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer"
-    	id="message_container">
-        <property name="connectionFactory" ref="connectionFactory"/>
-        <property name="messageListener" ref="globalInListener"/>
-        <property name="queueNames" value='input_queue'/>
-    </bean>
-
-    <rabbit:topic-exchange name="itsociety_source" durable="false"/>   
-
-    <bean id="refusedListener" class="it.cefriel.itsociety.security.RefusedMessageListener">
-        <property name="amqp" ref="amqpTemplate"></property>
-        <property name="target_exchange" value="itsociety_sink"></property>
-    </bean>
-     -->
-     
     <!-- SPRING INTEGRATION PART STARTS HERE -->
     <bean id="decider" class="it.cefriel.itsociety.security.AuthorizationDecider">
         <property name="rejected_exchange" ref="sink"/>
