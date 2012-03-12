@@ -47,6 +47,15 @@
     </rabbit:fanout-exchange>
 
     <!-- SPRING INTEGRATION PART STARTS HERE -->
+    <int:channel id="input_channel">
+        <int:dispatcher task-executor="messageChannelTaskExecutor"/>
+    </int:channel>
+
+    <bean id="messageChannelTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="10"/>
+        <property name="daemon" value="false"/>
+    </bean>
+    
     <int-amqp:inbound-channel-adapter id="input_adapter"
         channel="input_channel" queue-names="input_queue"
         connection-factory="connectionFactory"
@@ -58,11 +67,8 @@
         <property name="db" value="sqlDataSource"/>
     </bean>
     
-    <bean id="auth_executor" class="it.cefriel.itsociety.security.Executor">
-        <property name="db" value="sqlDataSource"/>
-    </bean>
-
-    <int:channel id="input_channel"/>
+    <bean id="auth_executor" class="it.cefriel.itsociety.security.Executor"/>
+        
     
     <int:channel id="good_channel"
     	datatype="org.springframework.amqp.core.Message" />
