@@ -21,7 +21,10 @@
     <bean id="jsonConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter"/>
     
     <!-- STORAGE -->
-    <cloud:data-source id="sqlDataSource" />
+    <cloud:data-source id="sqlDataSource" >
+        <cloud:pool pool-size="5-10" max-wait-time="2000" />
+    </cloud:data-source>
+
     <jdbc:initialize-database data-source="sqlDataSource">
         <jdbc:script location="classpath:resources/acl.sql"/>
     </jdbc:initialize-database>
