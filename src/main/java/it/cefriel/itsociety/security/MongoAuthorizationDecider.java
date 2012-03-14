@@ -17,7 +17,6 @@ import org.cloudfoundry.org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.amqp.core.Message;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.integration.annotation.Router;
 
 
