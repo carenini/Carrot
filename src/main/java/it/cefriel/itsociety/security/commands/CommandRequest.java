@@ -8,5 +8,5 @@ public interface CommandRequest {
     
     public String getTarget();
 
-    public void run();
+    public void exec();
 }

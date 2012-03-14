@@ -4,21 +4,35 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class DataAccessRequest implements CommandRequest {
 	private JdbcTemplate db=null;
-
+	private String issuer=null;
+	private String action=null;
+	private String target=null;
 	
 	public String getIssuer() {
-		return null;
+		return issuer;
+	}
+
+	public void setIssuer(String issuer) {
+		this.issuer = issuer;
 	}
 
 	public String getAction() {
-		return null;
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
 	}
 
 	public String getTarget() {
-		return null;
+		return target;
 	}
 
-	public void run() {
+	public void setTarget(String target) {
+		this.target = target;
+	}
+
+	public void exec() {
 
 	}
 

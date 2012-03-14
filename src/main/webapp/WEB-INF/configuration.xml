@@ -21,13 +21,15 @@
     <bean id="jsonConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter"/>
     
     <!-- STORAGE -->
-    <cloud:data-source id="sqlDataSource" >
+    <cloud:mongo-db-factory id="authorization_source"/>
+    <!-- <cloud:data-source id="authorization_source" >
         <cloud:pool pool-size="5-10" max-wait-time="2000" />
     </cloud:data-source>
 
     <jdbc:initialize-database data-source="sqlDataSource">
         <jdbc:script location="classpath:resources/acl.sql"/>
     </jdbc:initialize-database>
+ 	-->
 
     <!-- SERVICE BUS -->
     <cloud:rabbit-connection-factory id="connectionFactory"/>
@@ -67,7 +69,7 @@
     <bean id="decider" class="it.cefriel.itsociety.security.AuthorizationDecider">
         <property name="rejected_channel" value="bad_channel"/>
         <property name="authorized_channel" value="good_channel"/>
-        <property name="db" value="sqlDataSource"/>
+        <property name="nosql_store" value="authorization_source"/>
     </bean>
     
     <bean id="auth_executor" class="it.cefriel.itsociety.security.Executor"/>
@@ -86,4 +88,7 @@
     </int:router>
 
 
+    
+    	
+    
 </beans>

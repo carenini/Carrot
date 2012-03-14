@@ -11,9 +11,7 @@ CREATE TABLE role (
        role_id integer DEFAULT nextval ('role_seq') NOT NULL,
        role_name text DEFAULT '' NOT NULL,
        role_class integer DEFAULT 1 NOT NULL REFERENCES role_class (class_id),
-       home_group_id integer,
        is_public boolean DEFAULT false NOT NULL,
-       old_role_id integer DEFAULT 0 NOT NULL,
        CONSTRAINT role_pkey PRIMARY KEY (role_id),
        CONSTRAINT role_name_unique UNIQUE (role_id, role_name)
 ) ;
@@ -50,11 +48,7 @@ CREATE SEQUENCE users_pk_seq
 CREATE TABLE users (
     user_id integer DEFAULT nextval('users_pk_seq'::text) NOT NULL,
     user_name text DEFAULT ''::text NOT NULL,
-    email text DEFAULT ''::text NOT NULL,
     user_pw character varying(32) DEFAULT ''::character varying NOT NULL,
-    realname character varying(32) DEFAULT ''::character varying NOT NULL,
-    status character(1) DEFAULT 'A'::bpchar NOT NULL,
-    shell character varying(20) DEFAULT '/bin/bash'::character varying NOT NULL,
     type_id integer DEFAULT 1,
     unix_gid integer DEFAULT 0
 );
