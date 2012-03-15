@@ -17,7 +17,12 @@
         http://www.springframework.org/schema/integration/jdbc http://www.springframework.org/schema/integration/jdbc/spring-integration-jdbc-2.1.xsd
         http://www.springframework.org/schema/integration/amqp http://www.springframework.org/schema/integration/amqp/spring-integration-amqp-2.1.xsd
         ">
-    
+    <bean id="projectPropertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:itsociety_backbone.properties</value>
+		</property>
+	</bean>
+
     <bean id="jsonConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter"/>
     
     <!-- STORAGE -->
@@ -41,13 +46,13 @@
     	message-converter="jsonConverter" />
 
     <!-- Global input queue, bound to the exchange -->
-    <rabbit:queue id="input_queue" name="input_queue" durable="false" />
+    <rabbit:queue id="input_queue" name="${backbone.main_queue}" durable="false" />
 
     <!-- Master -> Slave exchange -->
-    <rabbit:fanout-exchange id="sink" name="itsociety_sink"
+    <rabbit:fanout-exchange id="sink" name="${backbone.sink_exchange}"
     	durable="false">   
         <rabbit:bindings>
-            <rabbit:binding queue="input_queue" />
+            <rabbit:binding queue="${backbone.main_queue}" />
         </rabbit:bindings>
     </rabbit:fanout-exchange>
 
@@ -62,7 +67,7 @@
     </bean>
     
     <int-amqp:inbound-channel-adapter id="input_adapter"
-        channel="input_channel" queue-names="input_queue"
+        channel="input_channel" queue-names="${backbone.main_queue}"
         connection-factory="connectionFactory"
         message-converter="jsonConverter" />
         
@@ -75,13 +80,11 @@
     <bean id="auth_executor" class="it.cefriel.itsociety.security.Executor"/>
         
     
-    <int:channel id="good_channel"
-    	datatype="org.springframework.amqp.core.Message" />
-    <int-amqp:publish-subscribe-channel id="bad_channel"
-    	connection-factory="connectionFactory" exchange="itsociety_sink" />
+    <int:channel id="good_channel" datatype="org.springframework.amqp.core.Message" />
+    
+    <int-amqp:publish-subscribe-channel id="bad_channel" connection-factory="connectionFactory" exchange="${backbone.sink_exchange}" />
 
-    <int:service-activator input-channel="good_channel" method="exec"
-    	ref="auth_executor" />
+    <int:service-activator input-channel="good_channel" method="exec" ref="auth_executor" />
 
     <int:router resolution-required="true" input-channel="input_channel"
     	ref="decider" method="check_authorization">
