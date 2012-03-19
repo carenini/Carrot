@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xmlns:cloud="http://schema.cloudfoundry.org/spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd
+        http://schema.cloudfoundry.org/spring http://schema.cloudfoundry.org/spring/cloudfoundry-spring.xsd
+        ">
+    <bean id="jsonConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter"/>
+    <!-- SERVICE BUS -->
+    <cloud:rabbit-connection-factory id="connectionFactory"/>
+	<rabbit:admin id="amqpAdmin" connection-factory="connectionFactory"/>
+    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" message-converter="jsonConverter" />
+
+    <!-- Global input queue, bound to the exchange -->
+    <rabbit:queue id="input_queue" name="${backbone.main_queue}" durable="false" />
+
+    <!-- Master -> Slave exchange -->
+    <rabbit:topic-exchange id="sink" name="${backbone.sink_exchange}" auto-delete="true" durable="false">
+		<rabbit:bindings>
+            <rabbit:binding queue="${backbone.main_queue}" 
+                pattern="#"/>
+		</rabbit:bindings>
+	</rabbit:topic-exchange>
+    
+</beans>

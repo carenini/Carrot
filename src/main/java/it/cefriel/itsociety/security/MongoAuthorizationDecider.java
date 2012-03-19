@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
+
 import it.cefriel.itsociety.security.authorization.Resource;
 import it.cefriel.itsociety.security.authorization.User;
 import it.cefriel.itsociety.security.commands.DataAccessRequest;
@@ -24,6 +26,17 @@ public class MongoAuthorizationDecider {
 	private String rejected_channel=null;
 	private String authorized_channel=null;
 	private MongoTemplate nosql_store=null;
+	
+	@PostConstruct
+	public void init(){
+		//TODO add logging
+		if (nosql_store==null) return;
+		
+		//FIXME: ADD DB INIT HERE!
+		//nosql_store.save(objectToSave);
+		//
+		
+	}
 	
 	@Router
 	public String check_authorization(Message m){

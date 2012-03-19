@@ -22,9 +22,12 @@
 			<value>classpath:itsociety_backbone.properties</value>
 		</property>
 	</bean>
+	<bean id="bottleneckConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:bottleneck_config.properties</value>
+		</property>
+	</bean>
 
-    <bean id="jsonConverter" class="org.springframework.amqp.support.converter.JsonMessageConverter"/>
-    
     <!-- STORAGE -->
     <cloud:mongo-db-factory id="authorization_source"/>
     <!-- <cloud:data-source id="authorization_source" >
@@ -36,38 +39,21 @@
     </jdbc:initialize-database>
  	-->
 
-    <!-- SERVICE BUS -->
-    <cloud:rabbit-connection-factory id="connectionFactory"/>
-	<rabbit:admin id="amqpAdmin" connection-factory="connectionFactory"/>
+    <import resource="backbone.xml" />
+    <import resource="bottleneck.xml" />
     
-    <!-- Set up the AmqpTemplate/RabbitTemplate: -->
-    <rabbit:template id="amqpTemplate"
-    	connection-factory="connectionFactory"
-    	message-converter="jsonConverter" />
-
-    <!-- Global input queue, bound to the exchange -->
-    <rabbit:queue id="input_queue" name="${backbone.main_queue}" durable="false" />
-
-    <!-- Master -> Slave exchange -->
-    <rabbit:fanout-exchange id="sink" name="${backbone.sink_exchange}"
-    	durable="false">   
-        <rabbit:bindings>
-            <rabbit:binding queue="${backbone.main_queue}" />
-        </rabbit:bindings>
-    </rabbit:fanout-exchange>
-
     <!-- SPRING INTEGRATION PART STARTS HERE -->
     <int:channel id="input_channel">
         <int:dispatcher task-executor="messageChannelTaskExecutor"/>
     </int:channel>
 
     <bean id="messageChannelTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-        <property name="corePoolSize" value="10"/>
+        <property name="corePoolSize" value="${bottleneck.threads}"/>
         <property name="daemon" value="false"/>
     </bean>
     
     <int-amqp:inbound-channel-adapter id="input_adapter"
-        channel="input_channel" queue-names="${backbone.main_queue}"
+        channel="input_channel" queue-names="${bottleneck.input_queue}"
         connection-factory="connectionFactory"
         message-converter="jsonConverter" />
         
@@ -76,22 +62,13 @@
         <property name="authorized_channel" value="good_channel"/>
         <property name="nosql_store" value="authorization_source"/>
     </bean>
-    
     <bean id="auth_executor" class="it.cefriel.itsociety.security.Executor"/>
-        
     
     <int:channel id="good_channel" datatype="org.springframework.amqp.core.Message" />
-    
     <int-amqp:publish-subscribe-channel id="bad_channel" connection-factory="connectionFactory" exchange="${backbone.sink_exchange}" />
-
     <int:service-activator input-channel="good_channel" method="exec" ref="auth_executor" />
-
     <int:router resolution-required="true" input-channel="input_channel"
     	ref="decider" method="check_authorization">
     </int:router>
 
-
-    
-    	
-    
 </beans>
